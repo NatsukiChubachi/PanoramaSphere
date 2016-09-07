@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<!--
+ NetBeans 8.0.2 で作成
+ パノラマ画像を球体のオブジェクトに貼り付け、内側から見ることによりGoogleStreetViewに近い表現を実現するサンプル
+ 魚眼レンズを用いて作成した360度パノラマ画像で行うことが出来ます。
+ WebGL(three.js)を用いて作成しています。
+ OrbitControls.jsを用いることでマウス操作による視野の回転を行っています。
+ また、DeviceOrientationControls.jsを用いることでスマートフォン等におけるジャイロでの視野回転を行っています。
+ 
+ ※注意
+ ローカルサーバー経由でアクセスしないとファイル参照部分でクロスドメイン制約に引っかかるので注意してください。
+ -->
+<html lang="ja">
+    <head>
+        <title>パノラマ画像を球形に貼り付け、視点回転を行うサンプル</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+        <!-- ブラウザ全体表示 -->
+        <style>
+          body {
+            margin: 0px;
+            overflow: hidden;
+          }
+        </style>
+        
+    </head>
+    <body>
+        <!-- シーンを作るタグ -->
+        <div id="stage"></div>
+
+        <!-- three.js系の読み込み -->
+        <script src="js/three.min.js"></script>
+        <script src="js/DeviceOrientationControls.js"></script>
+        <script src="js/OrbitControls.js"></script>
+
+<script>
+(function()
+{
+    // ジャイロ機能が有効かどうかの判断を行う
+    var ua = navigator.userAgent;
+  
+    if (ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0 || ua.indexOf('Android') > 0) {
+        var sp = true;
+    }else if(ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0){
+        var sp = true;
+    }
+
+    // 画面サイズの取得
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+
+    // シーンの作成
+    var scene = new THREE.Scene();
+
+    // ジオメトリの作成
+    // 球形のジオメトリを作成する
+    var geometry = new THREE.SphereGeometry( 1, 100, 100 );
+	
+    // 画像をテクスチャとして読み込む
+    var texture = new THREE.ImageUtils.loadTexture( "res/IMG_0001_Panorama.jpg" );
+    texture.minFilter = THREE.LinearFilter;
+    texture.flipY = false;
+
+    // マテリアルの作成    
+    var material = new THREE.MeshBasicMaterial( {
+        side: THREE.DoubleSide,
+        color: 0xFFFFFF, specular: 0xcccccc, shininess:50, ambient: 0xffffff,
+        map: texture
+	} );
+
+    // 作成した球形ジオメトリにマテリアルを付ける
+    sphere = new THREE.Mesh( geometry, material );
+    sphere.rotation.x += Math.PI;
+    
+    // 球形ジオメトリをシーン上に追加する
+    scene.add( sphere );
+
+    // カメラの設定
+    var camera = new THREE.PerspectiveCamera( 75, width / height, 0.5, 1000 );
+    camera.position.set( 0, 0, 0.1 );
+    camera.lookAt( sphere.position );
+
+    // レンダーの設定
+    var renderer = new THREE.WebGLRenderer({});
+    renderer.setSize( width, height );
+    renderer.setClearColor({ color: 0x000000 });
+    document.getElementById( 'stage' ).appendChild( renderer.domElement );
+    renderer.render( scene, camera );
+
+    // コントローラの設定
+    if(sp)
+    {
+        // ジャイロ動作をサポートしている場合
+        var gcontrols = new THREE.DeviceOrientationControls( camera, renderer.domElement );
+    }
+    else
+    {  
+        // ジャイロ動作をサポートしていない場合
+        var controls = new THREE.OrbitControls( camera, renderer.domElement );
+    }
+
+    // レンダー処理
+    // 毎回の描画で呼ばれる
+    function render()
+    {
+        // アニメーションフレームのリクエストなど
+        requestAnimationFrame( render );
+        window.addEventListener( 'resize', onWindowResize, false );
+        renderer.render( scene, camera );
+
+        if(sp)
+        {
+            // ジャイロコントロールによる角度の変更
+            gcontrols.connect();
+            gcontrols.update();
+        }
+        else
+        {
+            // 任意の処理による角度の変更等
+            /*
+            // 時間単位でテクスチャを切り替えるテスト
+            t += 0.05 * Math.PI/180;
+            controls.update();
+            
+            if ( iIndex < 10 &&
+                t > (iIndex * 0.10) &&
+                t <= (iIndex * 0.10) + (0.05 * Math.PI / 180) 
+                )
+            {
+                iIndex++;
+                //sphere.material.map = texture[ iIndex ];
+                sphere.material = new THREE.MeshBasicMaterial( {
+                    side: THREE.DoubleSide,
+                    color: 0xFFFFFF, 
+                    specular: 0xcccccc, 
+                    shininess:50, 
+                    ambient: 0xffffff,
+                    map: texture[iIndex]
+                    } );
+            }
+            */
+        }
+    }
+    render();
+    
+    // ウィンドウリサイズ時のイベント処理
+    function onWindowResize() 
+    {
+        // カメラアスペクトや行列、レンダーサイズの更新
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+    }
+    
+})();
+
+</script>
+
+    </body>
+</html>

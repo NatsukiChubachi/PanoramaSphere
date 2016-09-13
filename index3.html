@@ -55,7 +55,7 @@
     
     //video要素とそれをキャプチャするcanvas要素を生成
     var video = document.createElement('video');
-    video.src = "res/Speed Flying 360 Video Crystal Mountain.mp4";
+    video.src = "res/test.mp4";
     video.load();
     video.play();
 
@@ -158,9 +158,11 @@
         }
         
         //loop updateの中で実行
-        videoImageContext.drawImage(video, 0, 0);
-        if (videoTexture) {
-            videoTexture.needsUpdate = true;
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            videoImageContext.drawImage(video, 0, 0);
+            if (videoTexture) {
+                videoTexture.needsUpdate = true;
+            }
         }
     }
     render();

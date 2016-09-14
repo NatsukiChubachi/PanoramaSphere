@@ -30,7 +30,7 @@
         <div id="stage"></div>
 
         <!-- three.js系の読み込み -->
-        <script src="js/three.min.js"></script>
+        <script src="js/three.js"></script>
         <script src="js/DeviceOrientationControls.js"></script>
         <script src="js/OrbitControls.js"></script>
 
@@ -58,7 +58,9 @@
     var geometry = new THREE.SphereGeometry( 1, 100, 100 );
 	
     // 画像をテクスチャとして読み込む
-    var texture = new THREE.ImageUtils.loadTexture( "res/IMG_0001_Panorama.jpg" );
+    //var texture = new THREE.ImageUtils.loadTexture( "res/IMG_0001_Panorama.jpg" );
+    var loader = new THREE.TextureLoader();
+    var texture = new loader.load( "res/IMG_0001_Panorama.jpg" );
     texture.minFilter = THREE.LinearFilter;
     texture.flipY = false;
 

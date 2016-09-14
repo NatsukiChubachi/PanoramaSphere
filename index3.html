@@ -74,6 +74,8 @@
 </script>
 
 <script>
+    var videoImage;
+    
     function init()
     {
 
@@ -95,7 +97,7 @@
 	      clearInterval(intervalID);
 	    }
 	    
-	    var videoImage = document.createElement('canvas');
+	    videoImage = document.createElement('canvas');
 	    videoImage.width = width * 1.0;
 	    videoImage.height = height * 1.0;
 

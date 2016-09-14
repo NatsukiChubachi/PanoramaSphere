@@ -33,6 +33,7 @@
 
 <script src="resources/J3DI.js"> </script>
 <script src="resources/J3DIMath.js" type="text/javascript"> </script>
+
 <script id="vshader" type="x-shader/x-vertex">
     uniform mat4 u_modelViewProjMatrix;
     uniform mat4 u_normalMatrix;
@@ -76,6 +77,28 @@
 <script>
     function init()
     {
+
+	    //video要素とそれをキャプチャするcanvas要素を生成
+	    var video = document.createElement('video');
+	    video.src = "res/test.mp4";
+	    video.load();
+	    video.play();
+
+	    var videoImage = document.createElement('canvas');
+	    videoImage.width = width * 1.0;
+	    videoImage.height = height * 1.0;
+
+	    var videoImageContext = videoImage.getContext('2d');
+	    videoImageContext.fillStyle = '#000000';
+	    videoImageContext.fillRect(0, 0, videoImage.width, videoImage.height);
+
+	    //生成したcanvasをtextureとしてTHREE.Textureオブジェクトを生成
+	    var videoTexture = new THREE.Texture(videoImage);
+	    videoTexture.minFilter = THREE.LinearFilter;
+	    videoTexture.magFilter = THREE.LinearFilter;
+	    videoTexture.flipY = false;
+
+
         // Initialize
         var gl = initWebGL(
             // The id of the Canvas Element
@@ -102,7 +125,8 @@
         gl.box = makeBox(gl);
 
         // Load an image to use. Returns a WebGLTexture object
-        spiritTexture = loadImageTexture(gl, "res/5321712.png");
+        //spiritTexture = loadImageTexture(gl, "res/5321712.png");
+        spiritTexture = loadImageTexture(gl, videoTexture);
 
         // Create some matrices to use later and save their locations in the shaders
         gl.mvMatrix = new J3DIMatrix4();

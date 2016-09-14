@@ -66,7 +66,7 @@
 
     void main()
     {
-        vec2 texCoord = vec2(v_texCoord.s, 1.0 - v_texCoord.t);
+        vec2 texCoord = vec2(v_texCoord.s, v_texCoord.t);
         vec4 color = texture2D(sampler2d, texCoord);
         color += vec4(0.1, 0.1, 0.1, 1);
         gl_FragColor = vec4(color.xyz * v_Dot, color.a);
@@ -79,22 +79,14 @@
     function init()
     {
 
-	    //video要素とそれをキャプチャするcanvas要素を生成
-	    var video = document.getElementById('video');
-	    video.src = "res/test.mp4";
-	    video.preload = "auto"
-	    video.load();
-	    video.play();
-	    
-	    videoImage = document.createElement('canvas');
-	    videoImage.width = width * 1.0;
-	    videoImage.height = height * 1.0;
-
-	    var videoImageContext = videoImage.getContext('2d');
-	    videoImageContext.fillStyle = '#000000';
-	    videoImageContext.fillRect(0, 0, videoImage.width, videoImage.height);
-
-
+        //video要素とそれをキャプチャするcanvas要素を生成
+        var video = document.getElementById('video');
+        video.src = "res/test.mp4";
+        video.preload = "auto";
+        video.width = 256;
+        video.height = 256;
+        video.load();
+        video.play();
 
         // Initialize
         var gl = initWebGL(
@@ -120,6 +112,7 @@
         // the BufferObjects containing the arrays for vertices,
         // normals, texture coords, and indices.
         gl.box = makeBox(gl);
+        //gl.box = makeSphere(gl, 1, 20, 20);
 
         // Load an image to use. Returns a WebGLTexture object
         spiritTexture = loadImageTexture(gl, "res/5321712.png");
@@ -203,7 +196,7 @@
         gl.drawElements(gl.TRIANGLES, gl.box.numIndices, gl.UNSIGNED_BYTE, 0);
 
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, videoImage);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
 
         // Finish up.
         gl.flush();

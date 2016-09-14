@@ -80,7 +80,7 @@
     {
 
 	    //video要素とそれをキャプチャするcanvas要素を生成
-	    var video = document.createElement('video');
+	    var video = document.getElementById('video');
 	    video.src = "res/test.mp4";
 	    video.preload = "auto"
 	    video.load();
@@ -236,6 +236,10 @@
     canvas {
         border: 2px solid black;
     }
+    
+    video {
+      display: none;
+    }
 </style>
 </head>
 
@@ -243,6 +247,7 @@
 <canvas id="example">
     If you're seeing this your web browser doesn't support the &lt;canvas>&gt; element. Ouch!
 </canvas>
+<video></video>
 <div id="framerate"></div>
 </body>
 

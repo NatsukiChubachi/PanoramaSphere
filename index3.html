@@ -83,19 +83,8 @@
 	    var video = document.createElement('video');
 	    video.src = "res/test.mp4";
 	    video.preload = "auto"
-	    video.addEventListener("canplaythrough", startVideo, true);
-	    video.addEventListener("ended", videoDone, true);
 	    video.load();
 	    video.play();
-
-	    function startVideo() {
-	      video.play()
-	      intervalID = setInterval(drawScene, 15);
-	    }
-	    
-	    function videoDone() {
-	      clearInterval(intervalID);
-	    }
 	    
 	    videoImage = document.createElement('canvas');
 	    videoImage.width = width * 1.0;
